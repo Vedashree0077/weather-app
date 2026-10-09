@@ -39,11 +39,16 @@ export default function App() {
       }
 
       // Match the fields expected by WeatherCard.jsx
-      setWeather({
-        temperature: data.current.temperature_2m,
-        windspeed: data.current.wind_speed_10m,
-        winddirection: data.current.wind_direction_10m,
-      });
+ 
+setWeather({
+  temperature: data.current.temperature_2m,
+  feelsLike: data.current.apparent_temperature,
+  humidity: data.current.relative_humidity_2m,
+  windspeed: data.current.wind_speed_10m,
+  winddirection: data.current.wind_direction_10m,
+  weatherCode: data.current.weather_code,
+  isDay: data.current.is_day,
+});
 
       // ForecastChart expects an array of temperatures.
       const currentTimeIndex = data.hourly.time.findIndex(
