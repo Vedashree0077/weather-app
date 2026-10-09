@@ -1,6 +1,6 @@
 import WeatherIcon from "./WeatherIcon";
 
-export default function WeatherCard({ weather }) {
+export default function WeatherCard({ weather, location }) {
   if (!weather) return null;
 
   const getCondition = (code) => {
@@ -55,7 +55,11 @@ export default function WeatherCard({ weather }) {
 
   return (
     <div style={styles.card}>
-      <p style={styles.eyebrow}>CURRENT WEATHER</p>
+    <p style={styles.eyebrow}>CURRENT WEATHER</p>
+
+<h3 style={styles.location}>
+  📍 {location || "Your Location"}
+</h3>
 
       <div style={styles.main}>
         <span style={styles.weatherIcon}>{emoji}</span>
@@ -174,4 +178,12 @@ const styles = {
     fontWeight: "700",
     overflowWrap: "anywhere",
   },
+  
+location: {
+  margin: "0 0 20px",
+  fontSize: "20px",
+  fontWeight: "700",
+  color: "#172554",
+  overflowWrap: "anywhere",
+},
 };
