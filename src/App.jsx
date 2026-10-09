@@ -9,7 +9,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState("");
   const [dark, setDark] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); 
+  const [locationName, setLocationName] = useState("Your Location");
 
   // 🌍 FETCH WEATHER
   const fetchWeather = async (lat, lon) => {
@@ -152,7 +153,9 @@ if (
   normalizedCity === "mangalore" ||
   normalizedCity === "mangaluru"
 ) {
-  setLocationName("Mangaluru, India");
+ setLocationName(
+  `${selectedPlace.name}, ${selectedPlace.country || "Unknown country"}`
+);
   await fetchWeather(12.899824, 74.87738);
   return;
 }
