@@ -137,8 +137,22 @@ export default function App() {
       }
 
       // Prefer Delhi, India when searching for Delhi.
+   
+      // Select the correct city
+      const normalizedCity = searchName.trim().toLowerCase();
+
+      // Use the same coordinates for both Mangalore spellings
+      if (
+        normalizedCity === "mangalore" ||
+        normalizedCity === "mangaluru"
+      ) {
+        await fetchWeather(12.899824, 74.87738);
+        return;
+      }
+
+      // Prefer Delhi, India when searching for Delhi
       const selectedPlace =
-        searchName.toLowerCase() === "delhi"
+        normalizedCity === "delhi"
           ? results.find(
               (place) =>
                 place.country_code === "IN" &&
@@ -147,9 +161,7 @@ export default function App() {
           : results[0];
 
       if (!selectedPlace) {
-        throw new Error(
-          "Delhi, India was not found in the search results."
-        );
+        throw new Error("City not found. Please check the spelling.");
       }
 
       await fetchWeather(
