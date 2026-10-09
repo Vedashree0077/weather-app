@@ -150,7 +150,7 @@ export default function App() {
         return;
       }
 
-      // Prefer Delhi, India when searching for Delhi
+      
       const selectedPlace =
         normalizedCity === "delhi"
           ? results.find(
