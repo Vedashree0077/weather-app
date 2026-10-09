@@ -47,22 +47,24 @@ export default function WeatherCard({ weather, location }) {
     {
       icon: "🧭",
       label: "Wind direction",
-      value: weather.winddirection != null
-        ? `${weather.winddirection}°`
-        : "--",
+      value:
+        weather.winddirection != null
+          ? `${weather.winddirection}°`
+          : "--",
     },
   ];
 
   return (
     <div style={styles.card}>
-    <p style={styles.eyebrow}>CURRENT WEATHER</p>
+      <p style={styles.eyebrow}>CURRENT WEATHER</p>
 
-<h3 style={styles.location}>
-  📍 {location || "Your Location"}
-</h3>
+      <h3 style={styles.location}>
+        📍 {location || "Your Location"}
+      </h3>
 
       <div style={styles.main}>
         <span style={styles.weatherIcon}>{emoji}</span>
+
         <div>
           <h2 style={styles.temperature}>
             {Math.round(weather.temperature)}°
@@ -117,12 +119,12 @@ const styles = {
     color: "#64748b",
   },
   location: {
-  margin: "0 0 20px",
-  fontSize: "20px",
-  fontWeight: "700",
-  color: "#172554",
-  overflowWrap: "anywhere",
-},
+    margin: "0 0 20px",
+    fontSize: "20px",
+    fontWeight: "700",
+    color: "#172554",
+    overflowWrap: "anywhere",
+  },
   main: {
     display: "flex",
     alignItems: "center",
