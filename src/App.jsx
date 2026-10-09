@@ -147,13 +147,15 @@ setWeather({
       const normalizedCity = searchName.trim().toLowerCase();
 
       // Use the same coordinates for both Mangalore spellings
-      if (
-        normalizedCity === "mangalore" ||
-        normalizedCity === "mangaluru"
-      ) {
-        await fetchWeather(12.899824, 74.87738);
-        return;
-      }
+    
+if (
+  normalizedCity === "mangalore" ||
+  normalizedCity === "mangaluru"
+) {
+  setLocationName("Mangaluru, India");
+  await fetchWeather(12.899824, 74.87738);
+  return;
+}
 
       
       const selectedPlace =
@@ -165,14 +167,19 @@ setWeather({
             )
           : results[0];
 
-      if (!selectedPlace) {
-        throw new Error("City not found. Please check the spelling.");
-      }
+     
+if (!selectedPlace) {
+  throw new Error("City not found. Please check the spelling.");
+}
 
-      await fetchWeather(
-        selectedPlace.latitude,
-        selectedPlace.longitude
-      );
+setLocationName(
+  `${selectedPlace.name}, ${selectedPlace.country || "Unknown country"}`
+);
+
+await fetchWeather(
+  selectedPlace.latitude,
+  selectedPlace.longitude
+);
     } catch (err) {
       console.error("City search error:", err);
       setWeather(null);
@@ -281,7 +288,10 @@ setWeather({
         {/* WEATHER CONTENT */}
         {!loading && weather && (
           <>
-            <WeatherCard weather={weather} />
+            <WeatherCard
+  weather={weather}
+  location={locationName}
+/>
             <ForecastChart data={forecast} />
           </>
         )}
