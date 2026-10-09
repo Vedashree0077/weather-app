@@ -116,6 +116,13 @@ const styles = {
     letterSpacing: "2px",
     color: "#64748b",
   },
+  location: {
+  margin: "0 0 20px",
+  fontSize: "20px",
+  fontWeight: "700",
+  color: "#172554",
+  overflowWrap: "anywhere",
+},
   main: {
     display: "flex",
     alignItems: "center",
@@ -178,12 +185,4 @@ const styles = {
     fontWeight: "700",
     overflowWrap: "anywhere",
   },
-  
-location: {
-  margin: "0 0 20px",
-  fontSize: "20px",
-  fontWeight: "700",
-  color: "#172554",
-  overflowWrap: "anywhere",
-},
 };
