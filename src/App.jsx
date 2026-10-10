@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import WeatherCard from "./components/WeatherCard";
@@ -9,7 +10,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState("");
   const [dark, setDark] = useState(true);
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
   const [locationName, setLocationName] = useState("Your Location");
 
   // 🌍 FETCH WEATHER
@@ -40,16 +41,15 @@ export default function App() {
       }
 
       // Match the fields expected by WeatherCard.jsx
- 
-setWeather({
-  temperature: data.current.temperature_2m,
-  feelsLike: data.current.apparent_temperature,
-  humidity: data.current.relative_humidity_2m,
-  windspeed: data.current.wind_speed_10m,
-  winddirection: data.current.wind_direction_10m,
-  weatherCode: data.current.weather_code,
-  isDay: data.current.is_day,
-});
+      setWeather({
+        temperature: data.current.temperature_2m,
+        feelsLike: data.current.apparent_temperature,
+        humidity: data.current.relative_humidity_2m,
+        windspeed: data.current.wind_speed_10m,
+        winddirection: data.current.wind_direction_10m,
+        weatherCode: data.current.weather_code,
+        isDay: data.current.is_day,
+      });
 
       // ForecastChart expects an array of temperatures.
       const currentTimeIndex = data.hourly.time.findIndex(
@@ -120,14 +120,33 @@ setWeather({
       return;
     }
 
+    const normalizedCity = searchName.toLowerCase();
+
     setLoading(true);
     setError("");
 
     try {
+      // Use the same coordinates for both Mangalore spellings.
+      // Handle this before geocoding so it cannot use an incorrect city.
+      if (
+        normalizedCity === "mangalore" ||
+        normalizedCity === "mangaluru"
+      ) {
+        setLocationName("Mangaluru, India");
+        await fetchWeather(12.899824, 74.87738);
+        return;
+      }
+
+      // Filter Delhi searches to India.
+      const isDelhi =
+        normalizedCity === "delhi" ||
+        normalizedCity === "new delhi";
+
       const geoUrl =
         `https://geocoding-api.open-meteo.com/v1/search` +
         `?name=${encodeURIComponent(searchName)}` +
-        `&count=10&language=en&format=json`;
+        `&count=10&language=en&format=json` +
+        (isDelhi ? "&countryCode=IN" : "");
 
       const geoRes = await fetch(geoUrl);
 
@@ -139,50 +158,37 @@ setWeather({
       const results = geoData.results || [];
 
       if (results.length === 0) {
+        throw new Error(
+          isDelhi
+            ? "Delhi, India was not found. Please try Delhi again."
+            : "City not found. Please check the spelling."
+        );
+      }
+
+      // Select the correct city.
+      const selectedPlace = isDelhi
+        ? results.find(
+            (place) =>
+              place.country_code?.toUpperCase() === "IN" &&
+              (
+                place.name.toLowerCase() === "delhi" ||
+                place.name.toLowerCase() === "new delhi"
+              )
+          ) || results[0]
+        : results[0];
+
+      if (!selectedPlace) {
         throw new Error("City not found. Please check the spelling.");
       }
 
-     
-   
-      // Select the correct city
-      const normalizedCity = searchName.trim().toLowerCase();
+      setLocationName(
+        `${selectedPlace.name}, ${selectedPlace.country || "Unknown country"}`
+      );
 
-      // Use the same coordinates for both Mangalore spellings
-    
-if (
-  normalizedCity === "mangalore" ||
-  normalizedCity === "mangaluru"
-) {
- setLocationName(
-  `${selectedPlace.name}, ${selectedPlace.country || "Unknown country"}`
-);
-  await fetchWeather(12.899824, 74.87738);
-  return;
-}
-
-      
-      const selectedPlace =
-        normalizedCity === "delhi"
-          ? results.find(
-              (place) =>
-                place.country_code === "IN" &&
-                place.name.toLowerCase() === "delhi"
-            )
-          : results[0];
-
-     
-if (!selectedPlace) {
-  throw new Error("City not found. Please check the spelling.");
-}
-
-setLocationName(
-  `${selectedPlace.name}, ${selectedPlace.country || "Unknown country"}`
-);
-
-await fetchWeather(
-  selectedPlace.latitude,
-  selectedPlace.longitude
-);
+      await fetchWeather(
+        selectedPlace.latitude,
+        selectedPlace.longitude
+      );
     } catch (err) {
       console.error("City search error:", err);
       setWeather(null);
@@ -292,9 +298,9 @@ await fetchWeather(
         {!loading && weather && (
           <>
             <WeatherCard
-  weather={weather}
-  location={locationName}
-/>
+              weather={weather}
+              location={locationName}
+            />
             <ForecastChart data={forecast} />
           </>
         )}
