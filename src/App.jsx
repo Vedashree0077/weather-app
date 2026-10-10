@@ -142,7 +142,7 @@ setWeather({
         throw new Error("City not found. Please check the spelling.");
       }
 
-      // Prefer Delhi, India when searching for Delhi.
+     
    
       // Select the correct city
       const normalizedCity = searchName.trim().toLowerCase();
